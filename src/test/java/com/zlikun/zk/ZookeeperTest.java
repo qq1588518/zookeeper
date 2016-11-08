@@ -18,8 +18,8 @@ public class ZookeeperTest {
 
 	private static final Logger log = LoggerFactory.getLogger(ZookeeperTest.class) ;
 	
-//	private String server = "192.168.9.204:2181" ;
-	private String server = "192.168.9.204:2181,192.168.9.206:2181" ;
+	private String server = "192.168.60.210:2181" ;
+//	private String server = "192.168.9.204:2181,192.168.9.206:2181" ;
 	
 	@Test
 	public void test() throws IOException, InterruptedException, KeeperException {
@@ -41,6 +41,16 @@ public class ZookeeperTest {
 		log.info("ZooKeeper状态：{}" ,zk.getState().name());
 		log.info("ZooKeeper会话ID：{}" ,zk.getSessionId());
 
+		// 事先删除节点，避免后续创建出错
+		try {
+			for(String path : zk.getChildren("/zlikun", false)) {
+				zk.delete("/zlikun/" + path, -1);
+			}
+			zk.delete("/zlikun", -1);
+		} catch (Exception e) {
+			
+		}
+		
 		// 创建一个目录节点
 		/**
 		 * CreateMode:
