@@ -2,6 +2,8 @@ package com.zlikun.zk;
 
 import java.util.List;
 
+import org.apache.curator.RetryPolicy;
+import org.apache.curator.RetrySleeper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.CreateBuilder;
@@ -13,6 +15,7 @@ import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.retry.RetryNTimes;
 import org.apache.curator.utils.CloseableUtils;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 import org.junit.After;
@@ -31,6 +34,11 @@ public class CuratorClientTest {
 	
 	@Before
 	public void init() {
+
+//		// 创建CuratorFramework实例方式I
+//		client = CuratorFrameworkFactory.newClient(Consts.HOST_PORT, new RetryNTimes(1000 ,100)) ;
+
+		// 创建CuratorFramework实例方式II
 		client = CuratorFrameworkFactory.builder()
 				.connectString(Consts.HOST_PORT)
 				.connectionTimeoutMs(30000)
@@ -41,19 +49,9 @@ public class CuratorClientTest {
 				.defaultData(null)
 				.build() ;
 		// 连接状态监听
-		client.getConnectionStateListenable().addListener(new ConnectionStateListener() {
-			@Override
-			public void stateChanged(CuratorFramework client, ConnectionState state) {
-				log.info("connection state : {}" ,state);
-			}
-		});
+		client.getConnectionStateListenable().addListener((client, state) -> log.info("connection state : {}" ,state));
 		// 添加CuratorListener监听
-		client.getCuratorListenable().addListener(new CuratorListener() {
-			@Override
-			public void eventReceived(CuratorFramework client, CuratorEvent event) throws Exception {
-				log.info("CuratorEvent : {}" ,event);
-			}
-		});
+		client.getCuratorListenable().addListener((client, event) -> log.info("CuratorEvent : {}" ,event));
 		client.start();
 		// 判断/zlikun/curator目录是否存在，存在则删除，避免干扰后续测试
 		try {
@@ -78,8 +76,12 @@ public class CuratorClientTest {
 		// 连接客户端状态
 		log.info("client state : {}" ,client.getState());
 		
-		// 创建节点
-		String msg = client.create().forPath(path ,"Hello".getBytes()) ;
+		// 创建节点，链式调用
+		String msg = client.create()
+//				.inBackground()		// 表示异步执行
+				.withMode(CreateMode.PERSISTENT)
+				.withACL(ZooDefs.Ids.OPEN_ACL_UNSAFE)
+				.forPath(path ,"Hello".getBytes()) ;
 		// 创建节点消息：/zlikun
 		log.info("创建节点消息：{}" ,msg);
 		
