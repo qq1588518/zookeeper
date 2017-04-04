@@ -25,7 +25,6 @@ public class CuratorClientTest {
 
 	private Logger log = LoggerFactory.getLogger(CuratorClientTest.class) ;
 	
-	private String connectString = "192.168.60.210:2181" ;
 	private CuratorFramework client ;
 	
 	private String path = "/zlikun" ;
@@ -33,7 +32,7 @@ public class CuratorClientTest {
 	@Before
 	public void init() {
 		client = CuratorFrameworkFactory.builder()
-				.connectString(connectString)
+				.connectString(Consts.HOST_PORT)
 				.connectionTimeoutMs(30000)
 				.sessionTimeoutMs(30000)
 				.canBeReadOnly(false)

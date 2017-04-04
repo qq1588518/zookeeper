@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
@@ -18,23 +17,16 @@ public class ZookeeperTest {
 
 	private static final Logger log = LoggerFactory.getLogger(ZookeeperTest.class) ;
 	
-	private String server = "192.168.60.210:2181" ;
-//	private String server = "192.168.9.204:2181,192.168.9.206:2181" ;
-	
 	@Test
 	public void test() throws IOException, InterruptedException, KeeperException {
 
 		// zk连接字符串
-		String connectString = server ;
+		String connectString = Consts.HOST_PORT;
 		// zk会话超时设置，单位：毫秒
 		int sessionTimeout = 3000 ;
 		// zk观察者参数
-		Watcher watcher = new Watcher() {
-			// 监控所有被触发的事件
-			public void process(WatchedEvent event) {
-				log.info("已经触发了{}事件！" ,event.getType());
-			}
-		} ;
+		// 监控所有被触发的事件
+		Watcher watcher = event -> log.info("已经触发了{}事件！" ,event.getType());
 		
 		// 创建一个与服务器的连接
 		ZooKeeper zk = new ZooKeeper(connectString, sessionTimeout, watcher);
