@@ -1,4 +1,4 @@
-# zlikun-apache-zookeeper
+# zookeeper
 
 #### 参考文档  
 - <http://zookeeper.apache.org/>

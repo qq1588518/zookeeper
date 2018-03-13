@@ -1,6 +1,6 @@
-package com.zlikun.apache.watcher;
+package com.zlikun.hadoop.watcher;
 
-import com.zlikun.apache.Consts;
+import com.zlikun.hadoop.AppConstants;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
@@ -23,7 +23,7 @@ public class MasterWatcher implements Watcher {
     private boolean isLeader;
 
     public void startZk() throws IOException {
-        zk = new ZooKeeper(Consts.CONNECTIONS,15000 ,this) ;
+        zk = new ZooKeeper(AppConstants.CONNECTIONS,15000 ,this) ;
     }
 
     public void stopZk() throws InterruptedException {

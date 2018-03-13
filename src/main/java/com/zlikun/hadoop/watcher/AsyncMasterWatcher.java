@@ -1,6 +1,6 @@
-package com.zlikun.apache.watcher;
+package com.zlikun.hadoop.watcher;
 
-import com.zlikun.apache.Consts;
+import com.zlikun.hadoop.AppConstants;
 import org.apache.zookeeper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +77,7 @@ public class AsyncMasterWatcher implements Watcher {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        AsyncMasterWatcher m = new AsyncMasterWatcher(Consts.CONNECTIONS) ;
+        AsyncMasterWatcher m = new AsyncMasterWatcher(AppConstants.CONNECTIONS) ;
         m.startZk();
         m.runForMaster();
         if(m.isLeader) {
